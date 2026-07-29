@@ -3,12 +3,13 @@ from pydantic import BaseModel
 import time
 import joblib
 from contextlib import asynccontextmanager
+from clinical_trial_matcher.config import settings
 
 ml_models = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    ml_models["clf"] = joblib.load("model.joblib")
+    ml_models["clf"] = joblib.load(settings.model_path)
     print("Model loaded at startup")
     yield 
     ml_models.clear()
