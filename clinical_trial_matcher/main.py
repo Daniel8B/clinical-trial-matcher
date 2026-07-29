@@ -43,13 +43,16 @@ def search_trials(search_request: SearchRequest):
 @app.post("/predict", response_model=PredictResponse)#What goes out
 def predict(features: PredictRequest):#What comes in
 
-    start = time.perf_counter()
+    #start = time.perf_counter()
     clf = ml_models["clf"]
-    elapsed_time = time.perf_counter() - start
+    #elapsed_time = time.perf_counter() - start
 
     result = clf.predict([[features.feature_1, features.feature_2]])
 
-    print(f"Model loading took {elapsed_time:.4f} seconds")
+    # We used the timer before and after loading the model to measure the time it took to
+    # load the model before implementing the lifespan context manager. 
+    # The elapsed time is printed to the console for debugging purposes.
+    # print(f"Model loading took {elapsed_time:.4f} seconds")
 
     return {"prediction": int(result[0])}
 
