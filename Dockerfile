@@ -15,3 +15,4 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
 CMD ["uvicorn", "clinical_trial_matcher.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
