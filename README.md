@@ -54,7 +54,6 @@ pytest
 |---|---|---|
 | `GET` | `/health` | Liveness check. Currently reports process health only; will check the database connection once Postgres is added in week 2. |
 | `POST` | `/search` | Takes a `query` string and `top_k`. Validates input and returns an echo — retrieval is implemented in week 4. |
-| `POST` | `/predict` | Placeholder. Serves a trivial logistic regression to exercise the load-at-startup pattern. Not a product feature; it is replaced by the embedding model in week 2. |
 
 ## Design decisions
 

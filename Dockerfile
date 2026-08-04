@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY clinical_trial_matcher/ ./clinical_trial_matcher/
 
-COPY model.joblib .
+COPY corpus.json .
 
 ENV PYTHONUNBUFFERED=1
 
