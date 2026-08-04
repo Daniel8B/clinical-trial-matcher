@@ -1,21 +1,35 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import time
-import joblib
 from contextlib import asynccontextmanager
 from clinical_trial_matcher.config import settings
+from sentence_transformers import SentenceTransformer
+import json
+import numpy as np
 
 ml_models = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    ml_models["clf"] = joblib.load(settings.model_path)
+
+    with open("corpus.json")as f:
+        data = json.load(f)
+        texts = [item["text"] for item in data]
+    
+    ml_models["embedder"] = SentenceTransformer(settings.embedding_model_name)
+    ml_models["corpus"] = data
+    ml_models["corpus_vectors"] = ml_models["embedder"].encode(texts)
+
     print("Model loaded at startup")
     yield 
     ml_models.clear()
     print ("Model cleared at shutdown")
 
 app = FastAPI(lifespan=lifespan)
+
+class SearchResult(BaseModel):
+    id: int
+    trial_text: str  
+    score: float
 
 class SearchRequest(BaseModel):
     query: str
@@ -24,13 +38,7 @@ class SearchRequest(BaseModel):
 class SearchResponse(BaseModel):
     query: str
     result_count: int 
-
-class PredictRequest(BaseModel):
-    feature_1: float
-    feature_2: float
-
-class PredictResponse(BaseModel):
-    prediction: int
+    results: list[SearchResult]
 
 
 @app.get("/health")
@@ -39,23 +47,25 @@ def health_check():
 
 @app.post("/search", response_model=SearchResponse) 
 def search_trials(search_request: SearchRequest): 
-    return {"query": search_request.query, "result_count": search_request.top_k}
+    query_vector = ml_models["embedder"].encode(search_request.query)
 
-@app.post("/predict", response_model=PredictResponse)#What goes out
-def predict(features: PredictRequest):#What comes in
+    ranks = []
 
-    #start = time.perf_counter()
-    clf = ml_models["clf"]
-    #elapsed_time = time.perf_counter() - start
+    for item, vec in zip(ml_models["corpus"], ml_models["corpus_vectors"]):
+        similarity = float(np.dot(query_vector, vec))
+        ranks.append({
+            "id": item["id"],
+            "trial_text": item["text"],
+            "score": similarity,
+        })
 
-    result = clf.predict([[features.feature_1, features.feature_2]])
+    ranks.sort(key=lambda x: x["score"], reverse=True)
+    top = ranks[:search_request.top_k]
 
-    # We used the timer before and after loading the model to measure the time it took to
-    # load the model before implementing the lifespan context manager. 
-    # The elapsed time is printed to the console for debugging purposes.
-    # print(f"Model loading took {elapsed_time:.4f} seconds")
-
-    return {"prediction": int(result[0])}
-
+    return {
+        "query": search_request.query,
+        "result_count": len(top),
+        "results": top
+    }
 
 
