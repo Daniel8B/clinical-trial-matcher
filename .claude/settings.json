@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "defaultMode": "default",
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Edit(./.env)",
+      "Edit(./.env.*)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(docker compose down -v*)",
+      "Bash(rm -rf*)"
+    ],
+    "ask": [
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git checkout*)",
+      "Bash(git merge*)",
+      "Bash(docker compose down*)",
+      "Bash(pip install*)"
+    ],
+    "allow": [
+      "Read(./**)",
+      "Edit(./**)",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch)",
+      "Bash(git ls-files*)",
+      "Bash(pytest*)",
+      "Bash(python ingest.py)",
+      "Bash(docker compose up -d*)",
+      "Bash(docker compose ps)",
+      "Bash(docker compose logs*)",
+      "Bash(docker compose exec db psql*)"
+    ]
+  }
+}
