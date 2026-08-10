@@ -9,5 +9,7 @@ class Settings(BaseSettings):
 
     app_name: str = "clinical-trial-matcher"
 
+    database_url: str = "postgresql://trials:trials@localhost:5432/trials"
+
 
 settings = Settings()
