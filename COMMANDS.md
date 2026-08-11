@@ -108,6 +108,7 @@ docker ps                                 # running containers
 docker images                             # images on disk
 docker stop <id>                          # stop an orphaned container
 docker rmi <image>                        # delete an image
+
 ```
 
 - Docker Desktop must be **running**, not just installed — CLI ≠ daemon.

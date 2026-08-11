@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY clinical_trial_matcher/ ./clinical_trial_matcher/
 
-COPY corpus.json .
+COPY chunker.py ingest.py ./
 
 ENV PYTHONUNBUFFERED=1
 
