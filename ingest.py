@@ -48,7 +48,8 @@ CREATE TABLE chunks (
     section     TEXT NOT NULL,
     chunk_index INTEGER NOT NULL,
     chunk_text  TEXT NOT NULL,
-    embedding   vector(384) NOT NULL
+    embedding   vector(384) NOT NULL,
+    tsv         tsvector GENERATED ALWAYS AS (to_tsvector('english', chunk_text)) STORED
 );
 
 CREATE INDEX chunks_nct_id_idx ON chunks (nct_id);
