@@ -12,5 +12,9 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql://trials:trials@localhost:5432/trials"
 
+    llm_base_url: str = "http://localhost:11434"
+    llm_model_name: str = "llama3.1:8b"
+    llm_max_tokens: int = 400
+    llm_temperature: float = 0.0
 
 settings = Settings()
